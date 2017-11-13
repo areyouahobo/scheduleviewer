@@ -84,6 +84,7 @@ console.log(now);
     $("#schedHeader").text("Sunday");
     break;
   }
+  $("#selectedSchedule").text("Schedule " + selectedSchedule);
 /*} else {
   $("#schedHeader").text(now.format("dddd"));
   $("#currentClass").text(scheduleCalc(offhours)[0]);
