@@ -30,7 +30,15 @@
   }
 
   #selectedSchedule {
-    position: relative;
+    /*position: relative;*/
+    font-size: 9pt;
+    position: absolute;
+    bottom: 50px;
+    text-align: center;
+    left: 50%;
+    right: 25%;
+    width: 65px;
+    margin-left: -32.5px;
   }
 
   </style>
@@ -49,14 +57,8 @@
 <div id="minutesLeft"></div>
 <div id="nextClass"></div>
 
-<!-- <form id="rotationPick">
-    <input type="radio" name="rotations" value="A" /> A
-    <input type="radio" name="rotations" value="B" /> B
-    <input type="radio" name="rotations" value="C" /> C
-    <input type="radio" name="rotations" value="D" /> D
-</form> -->
 <button type="button" class="btn btn-primary" id="optionsLink" style="margin-bottom: 10px;">Settings</button>
-<div id="selectedSchedule"></div>
+<em><div id="selectedSchedule"></div></em>
 
 
 </body>

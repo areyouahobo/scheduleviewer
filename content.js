@@ -84,7 +84,11 @@ console.log(now);
     $("#schedHeader").text("Sunday");
     break;
   }
-  $("#selectedSchedule").text("Schedule " + selectedSchedule);
+  if (selectedSchedule == undefined) {
+    $("#selectedSchedule").text("Schedule A");
+  } else {
+    $("#selectedSchedule").text("Schedule " + selectedSchedule);
+  }
 /*} else {
   $("#schedHeader").text(now.format("dddd"));
   $("#currentClass").text(scheduleCalc(offhours)[0]);
