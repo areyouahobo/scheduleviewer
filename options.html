@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+  html, body {
+    height: 60px;
+    text-align: center;
+    font-family: 'Open Sans', sans-serif;
+  }
+  body {
+    position: relative;
+    margin-top: 25px;
+  }
+  </style>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <script type="text/javascript" src="jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="content.js"></script>
+  <script type="text/javascript" src="moment.js"></script>
+  <!-- <script type="text/javascript" src="options.js"></script> -->
+
+</head>
+<body>
+  <em style="padding:10px;">Report bugs and feedback <a href="https://goo.gl/forms/OP8VlIwwCaVBLlFr1">here</a>.</em>
+  <br>
+  <strong>Schedule to Load</strong>
+  <select id="scheduleToLoad">
+   <option value="A">A</option>
+   <option value="B">B</option>
+   <option value="C">C</option>
+   <option value="D">D</option>
+  </select>
+  <br>
+  <button type="button" class="btn btn-secondary" id="save" style="margin-bottom: 10px;">Save</button>
+  <div id="status"></div>
+  <script src="options.js"></script>
+
+</body>
+
+</html>

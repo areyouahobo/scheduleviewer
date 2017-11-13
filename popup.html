@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+  html, body {
+    height: 200px;
+    text-align: center;
+    font-family: 'Open Sans', sans-serif;
+  }
+  #titleSection {
+    background-color: black;
+    width: 150px;
+    font-size: 15pt;
+  }
+  #schedHeader {
+    color: white;
+  }
+  #currentClass {
+    font-size: 12pt;
+    font-weight: 500;
+  }
+  #optionsLink {
+    position: absolute;
+    bottom: 0;
+    text-align: center;
+    right: 25%
+    left: 50%;
+    width: 75px;
+    margin-left: -37.5px;
+  }
+
+  #selectedSchedule {
+    position: relative;
+  }
+
+  </style>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <script type="text/javascript" src="jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="variables.js"></script>
+  <script type="text/javascript" src="content.js"></script>
+  <script type="text/javascript" src="moment.js"></script>
+</head>
+<body>
+  <div id="titleSection">
+    <div id="schedHeader"></div>
+  </div>
+<div id="currentClass"></div>
+<div id="minutesLeft"></div>
+<div id="nextClass"></div>
+
+<!-- <form id="rotationPick">
+    <input type="radio" name="rotations" value="A" /> A
+    <input type="radio" name="rotations" value="B" /> B
+    <input type="radio" name="rotations" value="C" /> C
+    <input type="radio" name="rotations" value="D" /> D
+</form> -->
+<button type="button" class="btn btn-primary" id="optionsLink" style="margin-bottom: 10px;">Settings</button>
+<div id="selectedSchedule"></div>
+
+
+</body>
+</html>
