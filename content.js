@@ -38,30 +38,24 @@ chrome.runtime.onInstalled.addListener(function(details){
 });
 
 
-console.log(selectedSchedule + " has been loaded!");
 
-
-
-// var mondaySchedule, tuesdaySchedule, wednesdaySchedule, thursdaySchedule, fridaySchedule;
 var offhours = [
   ["00:00", "23:59", "No class today.", "No class today.","No class today.","No class today."]
 ];
-
 
 var date = new Date();
 var today = date.getDay();
 var now = moment();
 var schoolStart = "9:20";
 var schoolEnd = "16:30";
-console.log(now);
 
-// if (now.isAfter(schoolStart) && now.isBefore(schoolEnd)) {
+console.log("Number for today: " + today);
+
+if (now.isBetween(schoolStart, schoolEnd, null, '[]')) {
   switch (today) {
     case 0:
-    $("#schedHeader").text("Sunday");
-    // $("#currentClass").text(scheduleCalc(fridaySchedule)[0]);
-    // $("#minutesLeft").text(scheduleCalc(fridaySchedule)[1]);
-    // $("#nextClass").text(scheduleCalc(fridaySchedule)[2]);
+    $("#schedHeader").text("Saturday");
+    $("#currentClass").text("No class today.");
     break;
     case 1:
     $("#schedHeader").text("Monday");
@@ -95,26 +89,19 @@ console.log(now);
     break;
 
     case 6:
-    $("#schedHeader").text("Sunday");
+    $("#schedHeader").text("Saturday");
+    $("#currentClass").text("No class today.");
     break;
   }
+}/* else {
+  $("#schedHeader").text(now.format('dddd'));
+  $("#currentClass").text("No class right now.");
+}*/
   if (selectedSchedule == undefined) {
     $("#selectedSchedule").text("Schedule A");
   } else {
     $("#selectedSchedule").text("Schedule " + selectedSchedule);
   }
-/*} else {
-  $("#schedHeader").text(now.format("dddd"));
-  $("#currentClass").text(scheduleCalc(offhours)[0]);
-  // $("#schedHeader").text("Friday");
-  // $("#currentClass").text(scheduleCalc(fridaySchedule)[0]);
-  // $("#minutesLeft").text(scheduleCalc(fridaySchedule)[1]);
-  // $("#nextClass").text(scheduleCalc(fridaySchedule)[2]);
-
-}*/
-
-
-
 
 }
 
@@ -135,7 +122,7 @@ function scheduleCalc(sched) {
     var time1 = moment(sched[x][0], "hh:mm");
     var time2 = moment(sched[x][1], "hh:mm");
     var now = moment();
-    if (now.isAfter(time1) && now.isBefore(time2)) {
+    if (now.isBetween(time1, time2, null, '[]')) {
       var minutesRemaining = time2.diff(now, 'minutes') + 2;
       if (minutesRemaining/60 > 1) {
         var hours = 1;

@@ -1,6 +1,5 @@
-// $(function() {
-//   $("#save").click(save_options());
-// });
+var manifestData = chrome.runtime.getManifest();
+$("#versionDisplay").text("Version " + manifestData.version);
 function save_options() {
 
   var mondaySchedule, tuesdaySchedule, wednesdaySchedule, thursdaySchedule, fridaySchedule;
