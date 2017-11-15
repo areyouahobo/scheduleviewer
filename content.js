@@ -46,10 +46,10 @@ var offhours = [
 var date = new Date();
 var today = date.getDay();
 var now = moment();
-var schoolStart = "9:20";
-var schoolEnd = "16:30";
+var schoolStart = moment({hour: 9, minute: 20});
+var schoolEnd = moment({hour: 16, minute: 30});
 
-console.log("Number for today: " + today);
+
 
 if (now.isBetween(schoolStart, schoolEnd, null, '[]')) {
   switch (today) {
@@ -93,10 +93,11 @@ if (now.isBetween(schoolStart, schoolEnd, null, '[]')) {
     $("#currentClass").text("No class today.");
     break;
   }
-}/* else {
+} else {
   $("#schedHeader").text(now.format('dddd'));
   $("#currentClass").text("No class right now.");
-}*/
+  $("#minutesLeft").text();
+}
   if (selectedSchedule == undefined) {
     $("#selectedSchedule").text("Schedule A");
   } else {
@@ -154,4 +155,13 @@ function scheduleCalc(sched) {
 
   }
 
+}
+
+function updateEveryMinute(currentMinutesLeft) {
+  var secondsCalledAt = moment().format("ss");
+  setTimeout(function() {
+    setInterval(function() {
+      $("#minutesLeft").text(3)
+    }, 60 * 1000);
+}, 60 - (secondsCalledAt * 1000))
 }
