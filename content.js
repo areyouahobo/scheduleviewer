@@ -171,6 +171,7 @@ function updateEveryMinute(currentMinutesLeft) {
   console.log(secondsCalledAt);
   setTimeout(function() {
     currentMinutesLeft--;
+    $("#minutesLeft").text(currentMinutesLeft + " minutes left");
     var interval = setInterval(function() {
       currentMinutesLeft--;
       $("#minutesLeft").text(currentMinutesLeft + " minutes left");
