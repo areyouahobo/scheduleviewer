@@ -15,6 +15,8 @@ chrome.runtime.requestUpdateCheck(function(status) {
   }
 });
 
+
+
 $(function checkSettings() {
   chrome.storage.sync.get('scheduleToLoad', function(data) {
       console.log("The value is " + data.scheduleToLoad);
@@ -57,30 +59,36 @@ if (now.isBetween(schoolStart, schoolEnd, null, '[]')) {
     $("#schedHeader").text("Saturday");
     $("#currentClass").text("No class today.");
     break;
+
     case 1:
     $("#schedHeader").text("Monday");
     $("#currentClass").text(scheduleCalc(mondaySchedule)[0]);
     $("#minutesLeft").text(scheduleCalc(mondaySchedule)[1]);
     $("#nextClass").text(scheduleCalc(mondaySchedule)[2]);
     break;
+
     case 2:
     $("#schedHeader").text("Tuesday");
     $("#currentClass").text(scheduleCalc(tuesdaySchedule)[0]);
     $("#minutesLeft").text(scheduleCalc(tuesdaySchedule)[1]);
     $("#nextClass").text(scheduleCalc(tuesdaySchedule)[2]);
     break;
+
     case 3:
     $("#schedHeader").text("Wednesday");
     $("#currentClass").text(scheduleCalc(wednesdaySchedule)[0]);
-    $("#minutesLeft").text(scheduleCalc(wednesdaySchedule)[1]);
+    $("#minutesLeft").text(minutesDisplay(scheduleCalc(wednesdaySchedule)[1]));
+    updateEveryMinute(scheduleCalc(wednesdaySchedule)[1]);
     $("#nextClass").text(scheduleCalc(wednesdaySchedule)[2]);
     break;
+
     case 4:
     $("#schedHeader").text("Thursday");
     $("#currentClass").text(scheduleCalc(thursdaySchedule)[0]);
     $("#minutesLeft").text(scheduleCalc(thursdaySchedule)[1]);
     $("#nextClass").text(scheduleCalc(thursdaySchedule)[2]);
     break;
+
     case 5:
     $("#schedHeader").text("Friday");
     $("#currentClass").text(scheduleCalc(fridaySchedule)[0]);
@@ -128,12 +136,12 @@ function scheduleCalc(sched) {
       if (minutesRemaining/60 > 1) {
         var hours = 1;
         var minutes = minutesRemaining - 60;
-        minutesRemaining = hours + " hour and " + minutes + " minutes left";
-      } else if (minutesRemaining == 1) {
-          minutesRemaining = "1 minute left";
-        } else {
-            minutesRemaining = minutesRemaining + " minutes left";
-          }
+        minutesRemaining = hours + " " + minutes;
+      } /*else if (minutesRemaining == 1) {
+      //     minutesRemaining = "1 minute left";
+      //   } else {
+      //       minutesRemaining = minutesRemaining + " minutes left";
+      //     }*/
       var nextClass;
 
       if (x+1 < sched.length) {
@@ -158,10 +166,30 @@ function scheduleCalc(sched) {
 }
 
 function updateEveryMinute(currentMinutesLeft) {
+  console.log("Dynamic update called!");
   var secondsCalledAt = moment().format("ss");
+  console.log(secondsCalledAt);
   setTimeout(function() {
-    setInterval(function() {
-      $("#minutesLeft").text(3)
-    }, 60 * 1000);
-}, 60 - (secondsCalledAt * 1000))
+    currentMinutesLeft--;
+    var interval = setInterval(function() {
+      currentMinutesLeft--;
+      $("#minutesLeft").text(currentMinutesLeft + " minutes left");
+      $(window).unload(function() {
+        clearInterval(interval);
+      });
+    }, 60000);
+}, (60 - secondsCalledAt) * 1000)
+}
+
+function minutesDisplay(minutesRemaining) {
+  if (minutesRemaining/60 > 1) {
+    var hours = 1;
+    var minutes = minutesRemaining - 60;
+    minutesRemaining = hours + " " + minutes;
+  } else if (minutesRemaining == 1) {
+      minutesRemaining = "1 minute left";
+    } else {
+        minutesRemaining = minutesRemaining + " minutes left";
+      }
+      return minutesRemaining;
 }
