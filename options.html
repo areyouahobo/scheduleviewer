@@ -2,15 +2,33 @@
 <html>
 <head>
   <style>
-  html, body {
-    height: 60px;
+
+  |html, body {
+    height: 200px;
     text-align: center;
     font-family: 'Open Sans', sans-serif;
   }
+
   body {
     position: relative;
     margin-top: 25px;
   }
+
+  #theme {
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
+
+  .customPicks {
+    visibility: hidden;
+    display: none;
+  }
+
+  #colorSelection {
+    visibility: hidden;
+    display: none;
+  }
+
   </style>
   <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -37,8 +55,25 @@
   <strong>Theme</strong>
   <select id="theme">
     <option value="Classic">Classic</option>
-    <option value="Dark">Dark</option>
+    <option value="Midnight">Midnight</option>
+    <option value="Custom">Custom</option>
   </select>
+  <div id="colorSelection">
+    <center>
+  Background Color
+  <input class="customPicks" id="backgroundPick" type="color"></input>
+  Text Color
+  <input class="customPicks" id="textPick" type="color"></input>
+  Header Color
+  <input class="customPicks" id="headerPick" type="color"></input>
+  Header Text Color
+  <input class="customPicks" id="headerTextPick" type="color"></input>
+  Settings Button Color
+  <input class="customPicks" id="buttonColorPick" type="color"></input>
+  Settings Button Text Color
+  <input class="customPicks" id="buttonTextPick" type="color"></input>
+</center>
+</div>
   <br>
   <button type="button" class="btn btn-secondary" id="save" style="margin-bottom: 10px;">Save</button>
   <div id="status"></div>

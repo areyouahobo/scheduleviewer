@@ -1,5 +1,11 @@
 var selectedSchedule;
 var selectedTheme;
+var backgroundColor;
+var headerColor;
+var headerTextColor;
+var textColor;
+var buttonColor;
+var buttonTextColor;
 
 chrome.runtime.onUpdateAvailable.addListener(function(details) {
   console.log("updating to version " + details.version);
@@ -19,14 +25,16 @@ chrome.runtime.requestUpdateCheck(function(status) {
 
 
 $(function checkSettings() {
-  chrome.storage.sync.get('scheduleToLoad', function(data) {
-      console.log("The value is " + data.scheduleToLoad);
-      selectedSchedule = data.scheduleToLoad;
-      chrome.storage.sync.get('selectedTheme', function(data) {
-          console.log("Selected Theme " + data.theme);
-          selectedTheme = data.theme;
-          runMe();
-      });
+  chrome.storage.sync.get(['scheduleToLoad', 'selectedTheme', 'backgroundColor', 'headerColor', 'textColor', 'buttonColor', 'buttonTextColor'], function(data) {
+    selectedSchedule = data.scheduleToLoad;
+    selectedTheme = data.selectedTheme;
+    backgroundColor = data.backgroundColor;
+    headerColor = data.headerColor;
+    headerTextColor = data.headerTextColor;
+    textColor = data.textColor;
+    buttonColor = data.buttonColor;
+    buttonTextColor = data.buttonTextColor;
+      runMe();
   });
 
 });
@@ -46,8 +54,14 @@ chrome.runtime.onInstalled.addListener(function(details){
 
 init();
 
-if (selectedTheme == "Dark") {
-  $("body").css("background-color", "black");
+if (selectedTheme == "Midnight") {
+  $("body").css({"background-color":"black", "color":"white"});
+  $("#optionsLink").css({"background-color": "gray", "color":"white", "border-color": "gray"});
+}
+if (selectedTheme == "Custom") {
+  $("body").css({"background-color": backgroundColor, "color": textColor});
+  $("#optionsLink").css({"background-color": buttonColor, "color":buttonTextColor, "border-color": buttonColor});
+  $("#titleSection").css({"background-color": headerColor, "color": headerTextColor});
 }
 
 

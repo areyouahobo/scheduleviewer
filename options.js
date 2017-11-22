@@ -1,16 +1,71 @@
 var manifestData = chrome.runtime.getManifest();
 $("#versionDisplay").text("Version " + manifestData.version);
+chrome.storage.sync.get(['scheduleToLoad', 'selectedTheme', 'backgroundColor', 'headerColor', 'textColor', 'buttonColor', 'buttonTextColor'], function(data) {
+    selectedSchedule = data.scheduleToLoad;
+    selectedTheme = data.selectedTheme;
+    backgroundColor = data.backgroundColor;
+    headerColor = data.headerColor;
+    headerTextColor = data.headerTextColor;
+    textColor = data.textColor;
+    buttonColor = data.buttonColor;
+    buttonTextColor = data.buttonTextColor;
+});
+$(function(ready){
+  if (selectedSchedule == undefined) {
+    selectedSchedule = "A";
+  }
+  if (selectedTheme == undefined) {
+    selectedTheme = "Classic";
+  }
+  $("#scheduleToLoad").val(selectedSchedule);
+  $("#theme").val(selectedTheme);
+  if (headerColor != undefined) {
+    $("#backgroundPick").val(backgroundColor);
+    $("#headerPick").val(headerColor);
+    $("#headerTextPick").val(headerTextColor);
+    $("#textPick").val(textColor);
+    $("#buttonColorPick").val(buttonColor);
+    $("#buttonTextPick").val(buttonTextColor);
+  }
+  if ($("#theme").val() == "Custom") {
+    $(".customPicks").css({"visibility":"visible", "display":"block"});
+    $("#colorSelection").css({"visibility":"visible", "display":"block"});
+  }
+
+    $('#theme').change(function() {
+        if ($(this).val() == 'Custom') {
+      $(".customPicks").css({"visibility":"visible", "display":"block"});
+      $("#colorSelection").css({"visibility":"visible", "display":"block"});
+    } else {
+      $(".customPicks").css({"visibility":"hidden", "display":"none"});
+      $("#colorSelection").css({"visibility":"hidden", "display":"none"});
+    }
+    });
+});
 function save_options() {
 
   var mondaySchedule, tuesdaySchedule, wednesdaySchedule, thursdaySchedule, fridaySchedule;
 
   var scheduleToLoad = $("#scheduleToLoad").val();
   var selectedTheme = $("#theme").val();
-  console.log(selectedTheme + " was loaded or something");
+  var backgroundColor = $("#backgroundPick").val();
+  var headerColor = $("#headerPick").val();
+  var headerTextColor = $("#headerTextPick").val();
+  var textColor = $("#textPick").val();
+  var buttonColor = $("#buttonColorPick").val();
+  var buttonTextColor = $("#buttonTextPick").val();
   chrome.storage.sync.set({
     // syntax
     scheduleToLoad: scheduleToLoad,
-    selectedTheme: selectedTheme
+    selectedTheme: selectedTheme,
+    backgroundColor: backgroundColor,
+    headerColor: headerColor,
+    headerTextColor: headerTextColor,
+    textColor: textColor,
+    buttonColor: buttonColor,
+    buttonTextColor: buttonTextColor
+
+
       // favoriteColor: color,
       // likesColor: likesColor
     }, function() {
