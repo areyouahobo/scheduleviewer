@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html>
 <head>
   <style>
   html, body {
-    height: 200px;
+    height: 250px;
     text-align: center;
     font-family: 'Open Sans', sans-serif;
   }
@@ -16,8 +16,10 @@
     color: white;
   }
   #currentClass {
+    display: block;
     font-size: 12pt;
     font-weight: 500;
+    line-height: 200%;
   }
   #optionsLink {
     position: absolute;
@@ -41,9 +43,22 @@
     margin-left: -32.5px;
   }
 
+  #minutesLeft{
+    display: block;
+    line-height: 200%;
+  }
+
+  #timeRange {
+    display: block;
+    font-size: 9pt;
+    line-height: 200%;
+    font-style: oblique;
+  }
+
   </style>
   <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <script type="text/javascript" src='tabletop.js'></script>
   <script type="text/javascript" src="jquery-3.2.1.min.js"></script>
   <script type="text/javascript" src="variables.js"></script>
   <script type="text/javascript" src="content.js"></script>
@@ -55,8 +70,8 @@
   </div>
 <div id="currentClass"></div>
 <div id="minutesLeft"></div>
+<div id="timeRange"></div>
 <div id="nextClass"></div>
-<div id="here"></div>
 
 <button type="button" class="btn btn-primary" id="optionsLink" style="margin-bottom: 10px;">Settings</button>
 <em><div id="selectedSchedule"></div></em>

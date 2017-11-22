@@ -31,15 +31,15 @@ $("#optionsLink").click(function() {
   chrome.runtime.openOptionsPage();
 })
 chrome.runtime.onInstalled.addListener(function(details){
-    if(details.reason == "install"){
+    if (details.reason == "install"){
         chrome.storage.sync.set({ scheduleToLoad: A });
-    }else if(details.reason == "update"){
+    } else if(details.reason == "update"){
         var thisVersion = chrome.runtime.getManifest().version;
         console.log("Updated from " + details.previousVersion + " to " + thisVersion + "!");
     }
 });
 
-
+init();
 
 var offhours = [
   ["00:00", "23:59", "No class today.", "No class today.","No class today.","No class today."]
@@ -63,14 +63,18 @@ if (now.isBetween(schoolStart, schoolEnd, null, '[]')) {
     case 1:
     $("#schedHeader").text("Monday");
     $("#currentClass").text(scheduleCalc(mondaySchedule)[0]);
-    $("#minutesLeft").text(scheduleCalc(mondaySchedule)[1]);
+    $("#minutesLeft").text(minutesDisplay(scheduleCalc(mondaySchedule)[1]));
+    $("#timeRange").text(scheduleCalc(mondaySchedule)[3]);
+    updateEveryMinute(scheduleCalc(mondaySchedule)[1]);
     $("#nextClass").text(scheduleCalc(mondaySchedule)[2]);
     break;
 
     case 2:
     $("#schedHeader").text("Tuesday");
     $("#currentClass").text(scheduleCalc(tuesdaySchedule)[0]);
-    $("#minutesLeft").text(scheduleCalc(tuesdaySchedule)[1]);
+    $("#minutesLeft").text(minutesDisplay(scheduleCalc(tuesdaySchedule)[1]));
+    $("#timeRange").text(scheduleCalc(tuesdaySchedule)[3]);
+    updateEveryMinute(scheduleCalc(tuesdaySchedule)[1]);
     $("#nextClass").text(scheduleCalc(tuesdaySchedule)[2]);
     break;
 
@@ -78,6 +82,7 @@ if (now.isBetween(schoolStart, schoolEnd, null, '[]')) {
     $("#schedHeader").text("Wednesday");
     $("#currentClass").text(scheduleCalc(wednesdaySchedule)[0]);
     $("#minutesLeft").text(minutesDisplay(scheduleCalc(wednesdaySchedule)[1]));
+    $("#timeRange").text(scheduleCalc(wednesdaySchedule)[3]);
     updateEveryMinute(scheduleCalc(wednesdaySchedule)[1]);
     $("#nextClass").text(scheduleCalc(wednesdaySchedule)[2]);
     break;
@@ -85,14 +90,18 @@ if (now.isBetween(schoolStart, schoolEnd, null, '[]')) {
     case 4:
     $("#schedHeader").text("Thursday");
     $("#currentClass").text(scheduleCalc(thursdaySchedule)[0]);
-    $("#minutesLeft").text(scheduleCalc(thursdaySchedule)[1]);
+    $("#minutesLeft").text(minutesDisplay(scheduleCalc(thursdaySchedule)[1]));
+    $("#timeRange").text(scheduleCalc(thursdaySchedule)[3]);
+    updateEveryMinute(scheduleCalc(thursdaySchedule)[1]);
     $("#nextClass").text(scheduleCalc(thursdaySchedule)[2]);
     break;
 
     case 5:
     $("#schedHeader").text("Friday");
     $("#currentClass").text(scheduleCalc(fridaySchedule)[0]);
-    $("#minutesLeft").text(scheduleCalc(fridaySchedule)[1]);
+    $("#minutesLeft").text(minutesDisplay(scheduleCalc(fridaySchedule)[1]));
+    $("#timeRange").text(scheduleCalc(fridaySchedule)[3]);
+    updateEveryMinute(scheduleCalc(fridaySchedule)[1]);
     $("#nextClass").text(scheduleCalc(fridaySchedule)[2]);
     break;
 
@@ -131,24 +140,25 @@ function scheduleCalc(sched) {
     var time1 = moment(sched[x][0], "hh:mm");
     var time2 = moment(sched[x][1], "hh:mm");
     var now = moment();
-    if (now.isBetween(time1, time2, null, '[]')) {
+    var rightNow = moment(now);
+    if (rightNow.isBetween(time1, time2, null, '[]')) {
       var minutesRemaining = time2.diff(now, 'minutes') + 2;
       if (minutesRemaining/60 > 1) {
         var hours = 1;
         var minutes = minutesRemaining - 60;
         minutesRemaining = hours + " " + minutes;
-      } /*else if (minutesRemaining == 1) {
-      //     minutesRemaining = "1 minute left";
-      //   } else {
-      //       minutesRemaining = minutesRemaining + " minutes left";
-      //     }*/
+      }
       var nextClass;
 
       if (x+1 < sched.length) {
         if (sched[x+1][2].indexOf("Pre") == -1) {
           nextClass = "Next Class: " + sched[x+1][classRef];
         } else {
+          try {
           nextClass = "Next Class: " + sched[x+2][classRef];
+        } catch (e) {
+            nextClass = "";
+          }
         }
       }
 
@@ -156,7 +166,7 @@ function scheduleCalc(sched) {
         nextClass = "You don't have a class after this.";
       }
       // return the current class, time remaining, and the next class
-      var stuffToReturn = [sched[x][classRef], minutesRemaining, nextClass];
+      var stuffToReturn = [sched[x][classRef], minutesRemaining, nextClass, moment(sched[x][0], 'HH:mm').format('hh:mm a') + " - " + moment(sched[x][1], 'HH:mm').add(1, "minutes").format('hh:mm a')];
       return stuffToReturn;
     }
 
@@ -179,7 +189,7 @@ function updateEveryMinute(currentMinutesLeft) {
         clearInterval(interval);
       });
     }, 60000);
-}, (60 - secondsCalledAt) * 1000)
+}, (59 - secondsCalledAt) * 1000);
 }
 
 function minutesDisplay(minutesRemaining) {
@@ -194,3 +204,12 @@ function minutesDisplay(minutesRemaining) {
       }
       return minutesRemaining;
 }
+
+function init() {
+    Tabletop.init( { key: "https://docs.google.com/spreadsheets/d/1itsGeLY5A7tokzq45vtFHJ6QszcF7OT5_92MgR8OoZs/edit?usp=sharing",
+                     callback: showInfo,
+                     simpleSheet: true } )
+  }
+function showInfo(data, tabletop) {
+    console.log(data);
+  }

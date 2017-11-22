@@ -1,9 +1,9 @@
 {
   "manifest_version": 2,
   "name": "Schedule Viewer",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "Wisor",
-  "description": "A neato lil gadget so you know where to be",
+  "description": "PISD Academy High School schedule viewer for seniors",
   "icons": {
     "128": "icon.png"
   },
