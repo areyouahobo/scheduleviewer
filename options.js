@@ -5,15 +5,17 @@ function save_options() {
   var mondaySchedule, tuesdaySchedule, wednesdaySchedule, thursdaySchedule, fridaySchedule;
 
   var scheduleToLoad = $("#scheduleToLoad").val();
+  var selectedTheme = $("#theme").val();
+  console.log(selectedTheme + " was loaded or something");
   chrome.storage.sync.set({
     // syntax
-    scheduleToLoad: scheduleToLoad
+    scheduleToLoad: scheduleToLoad,
+    selectedTheme: selectedTheme
       // favoriteColor: color,
       // likesColor: likesColor
     }, function() {
-      // Update status to let user know options were saved.
       var status = document.getElementById('status');
-      status.textContent = "Schedule " + scheduleToLoad + " selected!";
+      status.textContent = "Settings saved!";
       setTimeout(function() {
         status.textContent = '';
       }, 3000);

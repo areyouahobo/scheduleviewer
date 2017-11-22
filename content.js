@@ -1,4 +1,5 @@
 var selectedSchedule;
+var selectedTheme;
 
 chrome.runtime.onUpdateAvailable.addListener(function(details) {
   console.log("updating to version " + details.version);
@@ -21,7 +22,11 @@ $(function checkSettings() {
   chrome.storage.sync.get('scheduleToLoad', function(data) {
       console.log("The value is " + data.scheduleToLoad);
       selectedSchedule = data.scheduleToLoad;
-      runMe();
+      chrome.storage.sync.get('selectedTheme', function(data) {
+          console.log("Selected Theme " + data.theme);
+          selectedTheme = data.theme;
+          runMe();
+      });
   });
 
 });
@@ -40,6 +45,11 @@ chrome.runtime.onInstalled.addListener(function(details){
 });
 
 init();
+
+if (selectedTheme == "Dark") {
+  $("body").css("background-color", "black");
+}
+
 
 var offhours = [
   ["00:00", "23:59", "No class today.", "No class today.","No class today.","No class today."]
