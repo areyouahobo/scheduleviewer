@@ -3,7 +3,7 @@
 <head>
   <style>
   html, body {
-    height: 250px;
+    height: 320px;
     text-align: center;
     font-family: 'Open Sans', sans-serif;
   }
@@ -44,7 +44,7 @@
     margin-left: -32.5px;
   }
 
-  #minutesLeft{
+  #minutesLeft {
     display: block;
     line-height: 200%;
   }
@@ -56,14 +56,26 @@
     font-style: oblique;
   }
 
+  #releaseStatus {
+    line-height: 125%;
+    display: block;
+  }
+
+  .spacer {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+
+
   </style>
   <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <script type="text/javascript" src='tabletop.js'></script>
   <script type="text/javascript" src="jquery-3.2.1.min.js"></script>
   <script type="text/javascript" src="variables.js"></script>
-  <script type="text/javascript" src="content.js"></script>
   <script type="text/javascript" src="moment.js"></script>
+  <script type="text/javascript" src="content.js"></script>
 </head>
 <body>
   <div id="titleSection">
@@ -73,6 +85,9 @@
 <div id="minutesLeft"></div>
 <div id="timeRange"></div>
 <div id="nextClass"></div>
+<div class="spacer"></div>
+<div id="releaseStatus"></div>
+
 
 <button type="button" class="btn btn-primary" id="optionsLink" style="margin-bottom: 10px;">Settings</button>
 <em><div id="selectedSchedule"></div></em>

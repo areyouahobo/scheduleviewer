@@ -1,11 +1,16 @@
-var selectedSchedule;
-var selectedTheme;
+var selectedSchedule = "A";
+var selectedTheme = "Classic";
 var backgroundColor;
 var headerColor;
 var headerTextColor;
 var textColor;
 var buttonColor;
 var buttonTextColor;
+var nameList;
+var username;
+
+var fullMoment = moment();
+var now = moment({hour: fullMoment.get('hour'), minute: fullMoment.get('minutes')});
 
 chrome.runtime.onUpdateAvailable.addListener(function(details) {
   console.log("updating to version " + details.version);
@@ -24,8 +29,7 @@ chrome.runtime.requestUpdateCheck(function(status) {
 
 
 
-$(function checkSettings() {
-  chrome.storage.sync.get(['scheduleToLoad', 'selectedTheme', 'backgroundColor', 'headerColor', 'textColor', 'buttonColor', 'buttonTextColor'], function(data) {
+  chrome.storage.sync.get(['scheduleToLoad', 'selectedTheme', 'backgroundColor', 'headerColor', 'textColor', 'buttonColor', 'buttonTextColor', 'username'], function(data) {
     selectedSchedule = data.scheduleToLoad;
     selectedTheme = data.selectedTheme;
     backgroundColor = data.backgroundColor;
@@ -34,15 +38,16 @@ $(function checkSettings() {
     textColor = data.textColor;
     buttonColor = data.buttonColor;
     buttonTextColor = data.buttonTextColor;
-      runMe();
+    username = data.username;
+    runMe();
   });
-
-});
-
 function runMe() {
+
+
 $("#optionsLink").click(function() {
   chrome.runtime.openOptionsPage();
-})
+});
+
 chrome.runtime.onInstalled.addListener(function(details){
     if (details.reason == "install"){
         chrome.storage.sync.set({ scheduleToLoad: A });
@@ -51,7 +56,7 @@ chrome.runtime.onInstalled.addListener(function(details){
         console.log("Updated from " + details.previousVersion + " to " + thisVersion + "!");
     }
 });
-
+$("#releaseStatus").text("Loading...");
 init();
 
 if (selectedTheme == "Midnight") {
@@ -71,10 +76,12 @@ var offhours = [
 
 var date = new Date();
 var today = date.getDay();
-var now = moment();
+
 var schoolStart = moment({hour: 9, minute: 20});
 var schoolEnd = moment({hour: 16, minute: 30});
+console.log(today + " is day");
 
+// console.log("minutes for rn" + ahorita);
 
 
 if (now.isBetween(schoolStart, schoolEnd, null, '[]')) {
@@ -160,13 +167,14 @@ function scheduleCalc(sched) {
   } else if (selectedSchedule == "D") {
     classRef = 5;
   }
+
   for (x = 0; x < sched.length; x++) {
-    var time1 = moment(sched[x][0], "hh:mm");
-    var time2 = moment(sched[x][1], "hh:mm");
-    var now = moment();
-    var rightNow = moment(now);
-    if (rightNow.isBetween(time1, time2, null, '[]')) {
-      var minutesRemaining = time2.diff(now, 'minutes') + 2;
+    var time1 = moment({hour: sched[x][0].substring(0, sched[x][0].indexOf(":")), minute: sched[x][0].substring(sched[x][0].indexOf(":") + 1)});
+    var time2 = moment({hour: sched[x][1].substring(0, sched[x][1].indexOf(":")), minute: sched[x][1].substring(sched[x][1].indexOf(":") + 1)});
+    var minutesRemaining = 0;
+    if (now.isBetween(time1, time2, null, '[]')) {
+      minutesRemaining = time2.diff(now, 'minutes') + 1;
+      console.log(minutesRemaining + " is left");
       if (minutesRemaining/60 > 1) {
         var hours = 1;
         var minutes = minutesRemaining - 60;
@@ -178,11 +186,7 @@ function scheduleCalc(sched) {
         if (sched[x+1][2].indexOf("Pre") == -1) {
           nextClass = "Next Class: " + sched[x+1][classRef];
         } else {
-          try {
           nextClass = "Next Class: " + sched[x+2][classRef];
-        } catch (e) {
-            nextClass = "";
-          }
         }
       }
 
@@ -190,7 +194,12 @@ function scheduleCalc(sched) {
         nextClass = "You don't have a class after this.";
       }
       // return the current class, time remaining, and the next class
+      if (minutesRemaining == undefined) {
+        minutesRemaining = 1;
+      }
+
       var stuffToReturn = [sched[x][classRef], minutesRemaining, nextClass, moment(sched[x][0], 'HH:mm').format('hh:mm a') + " - " + moment(sched[x][1], 'HH:mm').add(1, "minutes").format('hh:mm a')];
+      console.log(stuffToReturn);
       return stuffToReturn;
     }
 
@@ -230,10 +239,39 @@ function minutesDisplay(minutesRemaining) {
 }
 
 function init() {
-    Tabletop.init( { key: "https://docs.google.com/spreadsheets/d/1itsGeLY5A7tokzq45vtFHJ6QszcF7OT5_92MgR8OoZs/edit?usp=sharing",
+    Tabletop.init( { key: "https://docs.google.com/spreadsheets/d/1YTNGp8Kb9Ey2Jwkvqp09rPi-9lBWwjWtlwWHMvG9zpw/edit?usp=sharing",
                      callback: showInfo,
                      simpleSheet: true } )
   }
 function showInfo(data, tabletop) {
+  // data[i].Last)
+  if (username == undefined) {
+    $('#releaseStatus').text("Set your username in settings to see Senior Release Status");
+  } else {
+    var isClear = true;
+    var firstName = username.substring(0, username.indexOf(" "));
+    var lastName = username.substring(username.indexOf(" ") + 1);
+    var indexOfFirst, indexOfLast;
+    for (var i = 0; i < data.length; i++) {
+      if (data[i].First.indexOf(firstName) != -1) {
+        indexOfFirst = i;
+      }
+      if (data[i].Last.indexOf(lastName) != -1) {
+        indexOfLast = i;
+      }
+    }
+    if (indexOfLast != undefined && indexOfFirst != undefined) {
+      if (indexOfFirst == indexOfLast) {
+        isClear = false;
+      }
+    }
+    var status = isClear ? "Clear" : "Not clear <br> Click arrow for details";
+    console.log(indexOfFirst + " " + indexOfLast);
+
+    $('#releaseStatus').html(firstName + "'s <br> Release Status: <br>" + status);
+    // var currentHeight = $("body").height();
+    // var moreHeight = $("#releaseStatus").height();
+    // $("body").height(currentHeight + moreHeight);
+  }
     console.log(data);
   }

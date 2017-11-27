@@ -14,9 +14,9 @@
     margin-top: 25px;
   }
 
-  #theme {
-    margin-top: 15px;
-    margin-bottom: 15px;
+  .spacer {
+    margin-top: 10px;
+    margin-bottom: 10px;
   }
 
   .customPicks {
@@ -29,12 +29,17 @@
     display: none;
   }
 
+  #scheduleToLoad, #nameSelect, #theme {
+    /*text-align: center;*/
+  }
+
   </style>
   <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <script type="text/javascript" src="jquery-3.2.1.min.js"></script>
   <script type="text/javascript" src="content.js"></script>
   <script type="text/javascript" src="moment.js"></script>
+  <script type="text/javascript" src="variables.js"></script>
   <!-- <script type="text/javascript" src="options.js"></script> -->
 
 </head>
@@ -44,7 +49,9 @@
   <br>
   <em style="padding-bottom:10px;">Report bugs and feedback <a href="https://goo.gl/forms/OP8VlIwwCaVBLlFr1">here</a>.</em>
   <br>
+  <center>
   <strong>Schedule to Load</strong>
+  <br>
   <select id="scheduleToLoad">
    <option value="A">A</option>
    <option value="B">B</option>
@@ -52,14 +59,21 @@
    <option value="D">D</option>
   </select>
   <br>
+  <div class="spacer"></div>
+  <strong>Username</strong>
+  <br>
+  <select id="nameSelect">
+  </select>
+  <br>
+  <div class="spacer"></div>
   <strong>Theme</strong>
+  <br>
   <select id="theme">
     <option value="Classic">Classic</option>
     <option value="Midnight">Midnight</option>
     <option value="Custom">Custom</option>
   </select>
   <div id="colorSelection">
-    <center>
   Background Color
   <input class="customPicks" id="backgroundPick" type="color"></input>
   Text Color

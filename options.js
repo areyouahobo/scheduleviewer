@@ -1,6 +1,6 @@
 var manifestData = chrome.runtime.getManifest();
 $("#versionDisplay").text("Version " + manifestData.version);
-chrome.storage.sync.get(['scheduleToLoad', 'selectedTheme', 'backgroundColor', 'headerColor', 'textColor', 'buttonColor', 'buttonTextColor'], function(data) {
+chrome.storage.sync.get(['scheduleToLoad', 'selectedTheme', 'backgroundColor', 'headerColor', 'textColor', 'buttonColor', 'buttonTextColor', 'username'], function(data) {
     selectedSchedule = data.scheduleToLoad;
     selectedTheme = data.selectedTheme;
     backgroundColor = data.backgroundColor;
@@ -9,8 +9,19 @@ chrome.storage.sync.get(['scheduleToLoad', 'selectedTheme', 'backgroundColor', '
     textColor = data.textColor;
     buttonColor = data.buttonColor;
     buttonTextColor = data.buttonTextColor;
+    username = data.username;
 });
 $(function(ready){
+  var namesToAdd = '';
+for (var i=0; i< names.length; i++){
+   namesToAdd += '<option value="'+ names[i] + '">' + names[i] + '</option>';
+}
+$('#nameSelect').append(namesToAdd);
+
+  if (username != undefined) {
+    $('#nameSelect').val(username);
+  }
+
   if (selectedSchedule == undefined) {
     selectedSchedule = "A";
   }
@@ -54,6 +65,7 @@ function save_options() {
   var textColor = $("#textPick").val();
   var buttonColor = $("#buttonColorPick").val();
   var buttonTextColor = $("#buttonTextPick").val();
+  var username = $('#nameSelect').val();
   chrome.storage.sync.set({
     // syntax
     scheduleToLoad: scheduleToLoad,
@@ -63,7 +75,8 @@ function save_options() {
     headerTextColor: headerTextColor,
     textColor: textColor,
     buttonColor: buttonColor,
-    buttonTextColor: buttonTextColor
+    buttonTextColor: buttonTextColor,
+    username: username
 
 
       // favoriteColor: color,
