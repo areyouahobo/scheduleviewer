@@ -1,5 +1,12 @@
 var mondaySchedule, tuesdaySchedule, wednesdaySchedule, thursdaySchedule, fridaySchedule;
 
+var schoolStart = moment({hour: 9, minute: 20});
+var schoolEnd = moment({hour: 16, minute: 30});
+
+var offhours = [
+  ["00:00", "23:59", "No class today.", "No class today.","No class today.","No class today."]
+];
+
 mondaySchedule = [
 //     start, end, A, B, C, D
   ["9:20","10:09","English", "Government", "SRD", "Comp Sci"],
