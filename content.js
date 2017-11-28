@@ -1,35 +1,26 @@
 var selectedSchedule = "A";
 var selectedTheme = "Classic";
-var backgroundColor;
-var headerColor;
-var headerTextColor;
-var textColor;
-var buttonColor;
-var buttonTextColor;
-var nameList;
-var username;
+var backgroundColor, headerColor, headerTextColor, textColor, buttonColor, buttonTextColor, nameList, username;
 
 var fullMoment = moment();
 var now = moment({hour: fullMoment.get('hour'), minute: fullMoment.get('minutes')});
-
-chrome.runtime.onUpdateAvailable.addListener(function(details) {
-  console.log("updating to version " + details.version);
-  chrome.runtime.reload();
-});
+var dayName = fullMoment.format("dddd");
 
 chrome.runtime.requestUpdateCheck(function(status) {
   if (status == "update_available") {
-    console.log("update pending...");
+    console.log("Update available");
   } else if (status == "no_update") {
-    console.log("no update found");
-  } else if (status == "throttled") {
-    console.log("Oops, I'm asking too frequently - I need to back off.");
+    console.log("No updates needed");
   }
 });
 
+chrome.runtime.onUpdateAvailable.addListener(function(details) {
+  console.log("Updating to " + details.version);
+  chrome.runtime.reload();
+});
 
-
-  chrome.storage.sync.get(['scheduleToLoad', 'selectedTheme', 'backgroundColor', 'headerColor', 'textColor', 'buttonColor', 'buttonTextColor', 'username'], function(data) {
+chrome.storage.sync.get(['scheduleToLoad', 'selectedTheme', 'backgroundColor', 'headerColor',
+  'textColor', 'buttonColor', 'buttonTextColor', 'username'], function(data) {
     selectedSchedule = data.scheduleToLoad;
     selectedTheme = data.selectedTheme;
     backgroundColor = data.backgroundColor;
@@ -43,7 +34,6 @@ chrome.runtime.requestUpdateCheck(function(status) {
   });
 function runMe() {
 
-
 $("#optionsLink").click(function() {
   chrome.runtime.openOptionsPage();
 });
@@ -56,6 +46,7 @@ chrome.runtime.onInstalled.addListener(function(details){
         console.log("Updated from " + details.previousVersion + " to " + thisVersion + "!");
     }
 });
+
 $("#releaseStatus").text("Loading...");
 init();
 
@@ -69,71 +60,34 @@ if (selectedTheme == "Custom") {
   $("#titleSection").css({"background-color": headerColor, "color": headerTextColor});
 }
 
-
-var offhours = [
-  ["00:00", "23:59", "No class today.", "No class today.","No class today.","No class today."]
-];
-
 var date = new Date();
 var today = date.getDay();
-
-var schoolStart = moment({hour: 9, minute: 20});
-var schoolEnd = moment({hour: 16, minute: 30});
-console.log(today + " is day");
-
-// console.log("minutes for rn" + ahorita);
-
 
 if (now.isBetween(schoolStart, schoolEnd, null, '[]')) {
   switch (today) {
     case 0:
-    $("#schedHeader").text("Saturday");
+    $("#schedHeader").text("Sunday");
     $("#currentClass").text("No class today.");
     break;
 
     case 1:
-    $("#schedHeader").text("Monday");
-    $("#currentClass").text(scheduleCalc(mondaySchedule)[0]);
-    $("#minutesLeft").text(minutesDisplay(scheduleCalc(mondaySchedule)[1]));
-    $("#timeRange").text(scheduleCalc(mondaySchedule)[3]);
-    updateEveryMinute(scheduleCalc(mondaySchedule)[1]);
-    $("#nextClass").text(scheduleCalc(mondaySchedule)[2]);
+    createView(mondaySchedule);
     break;
 
     case 2:
-    $("#schedHeader").text("Tuesday");
-    $("#currentClass").text(scheduleCalc(tuesdaySchedule)[0]);
-    $("#minutesLeft").text(minutesDisplay(scheduleCalc(tuesdaySchedule)[1]));
-    $("#timeRange").text(scheduleCalc(tuesdaySchedule)[3]);
-    updateEveryMinute(scheduleCalc(tuesdaySchedule)[1]);
-    $("#nextClass").text(scheduleCalc(tuesdaySchedule)[2]);
+    createView(tuesdaySchedule);
     break;
 
     case 3:
-    $("#schedHeader").text("Wednesday");
-    $("#currentClass").text(scheduleCalc(wednesdaySchedule)[0]);
-    $("#minutesLeft").text(minutesDisplay(scheduleCalc(wednesdaySchedule)[1]));
-    $("#timeRange").text(scheduleCalc(wednesdaySchedule)[3]);
-    updateEveryMinute(scheduleCalc(wednesdaySchedule)[1]);
-    $("#nextClass").text(scheduleCalc(wednesdaySchedule)[2]);
+    createView(wednesdaySchedule);
     break;
 
     case 4:
-    $("#schedHeader").text("Thursday");
-    $("#currentClass").text(scheduleCalc(thursdaySchedule)[0]);
-    $("#minutesLeft").text(minutesDisplay(scheduleCalc(thursdaySchedule)[1]));
-    $("#timeRange").text(scheduleCalc(thursdaySchedule)[3]);
-    updateEveryMinute(scheduleCalc(thursdaySchedule)[1]);
-    $("#nextClass").text(scheduleCalc(thursdaySchedule)[2]);
+    createView(thursdaySchedule);
     break;
 
     case 5:
-    $("#schedHeader").text("Friday");
-    $("#currentClass").text(scheduleCalc(fridaySchedule)[0]);
-    $("#minutesLeft").text(minutesDisplay(scheduleCalc(fridaySchedule)[1]));
-    $("#timeRange").text(scheduleCalc(fridaySchedule)[3]);
-    updateEveryMinute(scheduleCalc(fridaySchedule)[1]);
-    $("#nextClass").text(scheduleCalc(fridaySchedule)[2]);
+    createView(fridaySchedule);
     break;
 
     case 6:
@@ -146,12 +100,33 @@ if (now.isBetween(schoolStart, schoolEnd, null, '[]')) {
   $("#currentClass").text("No class right now.");
   $("#minutesLeft").text();
 }
-  if (selectedSchedule == undefined) {
+
+if (selectedSchedule == undefined) {
     $("#selectedSchedule").text("Schedule A");
   } else {
     $("#selectedSchedule").text("Schedule " + selectedSchedule);
   }
 
+}
+
+function createView(sched) {
+  $("#schedHeader").text(dayName);
+  $("#currentClass").text(scheduleCalc(sched)[0]);
+  var mins = minutesDisplay(scheduleCalc(sched)[1]);
+  var minsToDisplay = mins;
+  var query = /[0-9][\s][0-9]/;
+
+  if (query.test(mins)) {
+    minsToDisplay = mins[0] + " hour and " + mins.substring(mins.indexOf(" ") + 1);
+    if (minsToDisplay.indexOf("minutes") != -1) {
+      minsToDisplay = minsToDisplay.replace("minutes", "minute");
+    }
+  }
+
+  $("#minutesLeft").text(minsToDisplay);
+  $("#timeRange").text(scheduleCalc(sched)[3]);
+  updateEveryMinute(scheduleCalc(sched)[1]);
+  $("#nextClass").text(scheduleCalc(sched)[2]);
 }
 
 function scheduleCalc(sched) {
@@ -160,26 +135,30 @@ function scheduleCalc(sched) {
 
   if (selectedSchedule == "A") {
     classRef = 2;
-  } else if (selectedSchedule == "B") {
-    classRef = 3;
-  } else if (selectedSchedule == "C") {
-    classRef = 4;
-  } else if (selectedSchedule == "D") {
-    classRef = 5;
+    } else if (selectedSchedule == "B") {
+      classRef = 3;
+      } else if (selectedSchedule == "C") {
+        classRef = 4;
+        } else if (selectedSchedule == "D") {
+          classRef = 5;
   }
 
   for (x = 0; x < sched.length; x++) {
-    var time1 = moment({hour: sched[x][0].substring(0, sched[x][0].indexOf(":")), minute: sched[x][0].substring(sched[x][0].indexOf(":") + 1)});
-    var time2 = moment({hour: sched[x][1].substring(0, sched[x][1].indexOf(":")), minute: sched[x][1].substring(sched[x][1].indexOf(":") + 1)});
+    var time1 = moment({hour: sched[x][0].substring(0, sched[x][0].indexOf(":")),
+      minute: sched[x][0].substring(sched[x][0].indexOf(":") + 1)});
+    var time2 = moment({hour: sched[x][1].substring(0, sched[x][1].indexOf(":")),
+      minute: sched[x][1].substring(sched[x][1].indexOf(":") + 1)});
     var minutesRemaining = 0;
+
     if (now.isBetween(time1, time2, null, '[]')) {
       minutesRemaining = time2.diff(now, 'minutes') + 1;
-      console.log(minutesRemaining + " is left");
+
       if (minutesRemaining/60 > 1) {
         var hours = 1;
         var minutes = minutesRemaining - 60;
         minutesRemaining = hours + " " + minutes;
       }
+
       var nextClass;
 
       if (x+1 < sched.length) {
@@ -194,24 +173,19 @@ function scheduleCalc(sched) {
         nextClass = "You don't have a class after this.";
       }
       // return the current class, time remaining, and the next class
-      if (minutesRemaining == undefined) {
-        minutesRemaining = 1;
-      }
+      minutesRemaining = minutesRemaining == undefined ? 1 : minutesRemaining;
 
-      var stuffToReturn = [sched[x][classRef], minutesRemaining, nextClass, moment(sched[x][0], 'HH:mm').format('hh:mm a') + " - " + moment(sched[x][1], 'HH:mm').add(1, "minutes").format('hh:mm a')];
-      console.log(stuffToReturn);
+      var stuffToReturn = [sched[x][classRef], minutesRemaining, nextClass,
+        moment(sched[x][0], 'HH:mm').format('hh:mm a') + " - " + moment(sched[x][1], 'HH:mm').add(1, "minutes").format('hh:mm a')];
+
       return stuffToReturn;
     }
-
-
   }
-
 }
 
 function updateEveryMinute(currentMinutesLeft) {
-  console.log("Dynamic update called!");
   var secondsCalledAt = moment().format("ss");
-  console.log(secondsCalledAt);
+
   setTimeout(function() {
     currentMinutesLeft--;
     $("#minutesLeft").text(currentMinutesLeft + " minutes left");
@@ -232,10 +206,10 @@ function minutesDisplay(minutesRemaining) {
     minutesRemaining = hours + " " + minutes;
   } else if (minutesRemaining == 1) {
       minutesRemaining = "1 minute left";
-    } else {
+     } else {
         minutesRemaining = minutesRemaining + " minutes left";
       }
-      return minutesRemaining;
+        return minutesRemaining;
 }
 
 function init() {
@@ -245,6 +219,7 @@ function init() {
   }
 function showInfo(data, tabletop) {
   // data[i].Last)
+  console.log(data);
   if (username == undefined) {
     $('#releaseStatus').text("Set your username in settings to see Senior Release Status");
   } else {
@@ -260,18 +235,14 @@ function showInfo(data, tabletop) {
         indexOfLast = i;
       }
     }
-    if (indexOfLast != undefined && indexOfFirst != undefined) {
-      if (indexOfFirst == indexOfLast) {
-        isClear = false;
-      }
-    }
-    var status = isClear ? "Clear" : "Not clear <br> Click arrow for details";
     console.log(indexOfFirst + " " + indexOfLast);
+    if (indexOfLast != undefined && indexOfFirst != undefined) {
+      isClear = !(indexOfFirst == indexOfLast);
+    }
+    console.log("isClear = " + isClear);
+
+    var status = isClear ? "Clear" : "Not clear <br> See <a href=\"https:\/\/docs.google.com/spreadsheets/d/1re8tmdTfL0bM2Sz5ZP-op6u61KzGKNuXynn1xdEItac/edit#gid=947522328\" target=\"_blank\">here</a> for details.";
 
     $('#releaseStatus').html(firstName + "'s <br> Release Status: <br>" + status);
-    // var currentHeight = $("body").height();
-    // var moreHeight = $("#releaseStatus").height();
-    // $("body").height(currentHeight + moreHeight);
   }
-    console.log(data);
-  }
+}
