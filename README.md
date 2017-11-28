@@ -10,3 +10,5 @@ An extension that shows the current class, time remaining, and the next class.
 3) Make sure the "Developer Mode" box is ticked
 4) Click "Pack Extension" and select the directory where you downloaded the files
 5) Drag and drop the generated .crx file onto the extensions page
+
+Alternatively, you can click "Load Unpacked Extension" and select the folder.
