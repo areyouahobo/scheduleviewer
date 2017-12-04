@@ -32,6 +32,8 @@ chrome.storage.sync.get(['scheduleToLoad', 'selectedTheme', 'backgroundColor', '
     username = data.username;
     runMe();
   });
+  $("#releaseStatus").text("Loading...");
+  init();
 function runMe() {
 
 $("#optionsLink").click(function() {
@@ -47,8 +49,7 @@ chrome.runtime.onInstalled.addListener(function(details){
     }
 });
 
-$("#releaseStatus").text("Loading...");
-init();
+
 
 if (selectedTheme == "Midnight") {
   $("body").css({"background-color":"black", "color":"white"});
@@ -63,7 +64,7 @@ if (selectedTheme == "Custom") {
 var date = new Date();
 var today = date.getDay();
 
-if (now.isBetween(schoolStart, schoolEnd, null, '[]')) {
+// if (now.isBetween(schoolStart, schoolEnd, null, '[]')) {
   switch (today) {
     case 0:
     $("#schedHeader").text("Sunday");
@@ -75,7 +76,11 @@ if (now.isBetween(schoolStart, schoolEnd, null, '[]')) {
     break;
 
     case 2:
+  try {
     createView(tuesdaySchedule);
+  } catch (TypeError) {
+    console.log("Dammit");
+  }
     break;
 
     case 3:
@@ -95,11 +100,10 @@ if (now.isBetween(schoolStart, schoolEnd, null, '[]')) {
     $("#currentClass").text("No class today.");
     break;
   }
-} else {
-  $("#schedHeader").text(now.format('dddd'));
-  $("#currentClass").text("No class right now.");
-  $("#minutesLeft").text();
-}
+// } else {
+//   $("#schedHeader").text(now.format('dddd'));
+//   $("#currentClass").text("No class right now.");
+// }
 
 if (selectedSchedule == undefined) {
     $("#selectedSchedule").text("Schedule A");
@@ -112,20 +116,9 @@ if (selectedSchedule == undefined) {
 function createView(sched) {
   $("#schedHeader").text(dayName);
   $("#currentClass").text(scheduleCalc(sched)[0]);
-  var mins = minutesDisplay(scheduleCalc(sched)[1]);
-  var minsToDisplay = mins;
-  var query = /[0-9][\s][0-9]/;
 
-  if (query.test(mins)) {
-    minsToDisplay = mins[0] + " hour and " + mins.substring(mins.indexOf(" ") + 1);
-    if (minsToDisplay.indexOf("minutes") != -1) {
-      minsToDisplay = minsToDisplay.replace("minutes", "minute");
-    }
-  }
-
-  $("#minutesLeft").text(minsToDisplay);
   $("#timeRange").text(scheduleCalc(sched)[3]);
-  updateEveryMinute(scheduleCalc(sched)[1]);
+  // updateEveryMinute(scheduleCalc(sched)[1]);
   $("#nextClass").text(scheduleCalc(sched)[2]);
 }
 
@@ -153,12 +146,6 @@ function scheduleCalc(sched) {
     if (now.isBetween(time1, time2, null, '[]')) {
       minutesRemaining = time2.diff(now, 'minutes') + 1;
 
-      if (minutesRemaining/60 > 1) {
-        var hours = 1;
-        var minutes = minutesRemaining - 60;
-        minutesRemaining = hours + " " + minutes;
-      }
-
       var nextClass;
 
       if (x+1 < sched.length) {
@@ -175,29 +162,41 @@ function scheduleCalc(sched) {
       // return the current class, time remaining, and the next class
       minutesRemaining = minutesRemaining == undefined ? 1 : minutesRemaining;
 
+      var hoursRemaining = minutesRemaining > 60 ? Math.floor(minutesRemaining/60) : 0;
+      minutesRemaining = hoursRemaining > 0 ? minutesRemaining - (hoursRemaining * 60) : minutesRemaining;
+
+
       var stuffToReturn = [sched[x][classRef], minutesRemaining, nextClass,
         moment(sched[x][0], 'HH:mm').format('hh:mm a') + " - " + moment(sched[x][1], 'HH:mm').add(1, "minutes").format('hh:mm a')];
+
+        var secondsCalledAt = moment().format("ss");
+
+        var hourString = "hours,";
+        var minuteString = " minutes left";
+
+        if (hoursRemaining == 1) {
+          hourString = "hour,";
+        }
+        if (minutesRemaining == 1) {
+          minuteString = " minute left";
+        }
+
+        if (hoursRemaining > 0) {
+          $("#minutesLeft").html(hoursRemaining + hourString + "<br>" + minutesRemaining + minuteString);
+        } else {
+          $("#minutesLeft").text(minutesRemaining + minuteString);
+        }
+        setTimeout(function() {
+          fullMoment = moment();
+          now = moment({hour: fullMoment.get('hour'), minute: fullMoment.get('minutes')});
+            runMe();
+        }, (60 - secondsCalledAt) * 1000);
 
       return stuffToReturn;
     }
   }
 }
 
-function updateEveryMinute(currentMinutesLeft) {
-  var secondsCalledAt = moment().format("ss");
-
-  setTimeout(function() {
-    currentMinutesLeft--;
-    $("#minutesLeft").text(currentMinutesLeft + " minutes left");
-    var interval = setInterval(function() {
-      currentMinutesLeft--;
-      $("#minutesLeft").text(currentMinutesLeft + " minutes left");
-      $(window).unload(function() {
-        clearInterval(interval);
-      });
-    }, 60000);
-}, (59 - secondsCalledAt) * 1000);
-}
 
 function minutesDisplay(minutesRemaining) {
   if (minutesRemaining/60 > 1) {
