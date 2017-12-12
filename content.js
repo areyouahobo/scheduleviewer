@@ -285,8 +285,9 @@ function showInfo(data, tabletop) {
 
     var lines = (reasons.match(new RegExp("<br>", "g")) || []).length;
     var lineHeight = $("#releaseDetails").css("line-height");
-    var detailsHeight = $("#releaseDetails").outerHeight(true);
-    var setter = 95/(lines + 1) + "px";
+    var detailsHeight = $("#nextClass").offset().bottom - $("#arrowDrop").offset().top;
+    $("#releaseDetails").height(detailsHeight);
+    var setter = detailsHeight/(lines + 1) + "px";
     $('#releaseDetails').css({"line-height": setter + "px", "font-size": setter / 2 + "px"});
     console.log("Reasons: " + reasons);
     console.log("Line Height: " + lineHeight);
