@@ -2,9 +2,12 @@ var selectedSchedule = "A";
 var selectedTheme = "Classic";
 var backgroundColor, headerColor, headerTextColor, textColor, buttonColor, buttonTextColor, nameList, username;
 
+var oneRun = false;
+
 var fullMoment = moment();
 var now = moment({hour: fullMoment.get('hour'), minute: fullMoment.get('minutes')});
 var dayName = fullMoment.format("dddd");
+
 
 chrome.runtime.requestUpdateCheck(function(status) {
   if (status == "update_available") {
@@ -32,21 +35,49 @@ chrome.storage.sync.get(['scheduleToLoad', 'selectedTheme', 'backgroundColor', '
     username = data.username;
     runMe();
   });
+
+chrome.runtime.onInstalled.addListener(function(details){
+      if (details.reason == "install"){
+          chrome.storage.sync.set({ scheduleToLoad: A });
+      } else if(details.reason == "update"){
+          var thisVersion = chrome.runtime.getManifest().version;
+          console.log("Updated from " + details.previousVersion + " to " + thisVersion + "!");
+      }
+  });
+$(function() {
   $("#releaseStatus").text("Loading...");
-  init();
+  setTimeout(function() {
+    if ($("#releaseStatus").text() == "Loading...") {
+      $("#releaseStatus").text("Loading... (still)");
+    }
+  }, 5000);
+  $("#arrowDrop").click(function () {
+    if ($(this).text() == ">") {
+      // $("#releaseStatus").css({"visibility":"hidden","display":"none"});
+      $("#releaseStatus").fadeOut(function() {
+        $("#releaseDetails").css({"visibility":"visible","display":"inline"});
+        $("#arrowDrop").text("<");
+      });
+    } else if ($(this).text() == "<") {
+      $("#releaseDetails").fadeOut(function() {
+        $("#releaseStatus").css({"visibility":"visible","display":"inline"});
+        $("#arrowDrop").text(">");
+      });
+      // $("#releaseDetails").css({"visibility":"hidden","display":"none"});
+    }
+
+  });
+});
+
+
 function runMe() {
+
+if (!oneRun) {
+init();
+}
 
 $("#optionsLink").click(function() {
   chrome.runtime.openOptionsPage();
-});
-
-chrome.runtime.onInstalled.addListener(function(details){
-    if (details.reason == "install"){
-        chrome.storage.sync.set({ scheduleToLoad: A });
-    } else if(details.reason == "update"){
-        var thisVersion = chrome.runtime.getManifest().version;
-        console.log("Updated from " + details.previousVersion + " to " + thisVersion + "!");
-    }
 });
 
 
@@ -64,7 +95,6 @@ if (selectedTheme == "Custom") {
 var date = new Date();
 var today = date.getDay();
 
-// if (now.isBetween(schoolStart, schoolEnd, null, '[]')) {
   switch (today) {
     case 0:
     $("#schedHeader").text("Sunday");
@@ -76,11 +106,7 @@ var today = date.getDay();
     break;
 
     case 2:
-  try {
     createView(tuesdaySchedule);
-  } catch (TypeError) {
-    console.log("Dammit");
-  }
     break;
 
     case 3:
@@ -100,10 +126,6 @@ var today = date.getDay();
     $("#currentClass").text("No class today.");
     break;
   }
-// } else {
-//   $("#schedHeader").text(now.format('dddd'));
-//   $("#currentClass").text("No class right now.");
-// }
 
 if (selectedSchedule == undefined) {
     $("#selectedSchedule").text("Schedule A");
@@ -116,9 +138,7 @@ if (selectedSchedule == undefined) {
 function createView(sched) {
   $("#schedHeader").text(dayName);
   $("#currentClass").text(scheduleCalc(sched)[0]);
-
   $("#timeRange").text(scheduleCalc(sched)[3]);
-  // updateEveryMinute(scheduleCalc(sched)[1]);
   $("#nextClass").text(scheduleCalc(sched)[2]);
 }
 
@@ -171,11 +191,11 @@ function scheduleCalc(sched) {
 
         var secondsCalledAt = moment().format("ss");
 
-        var hourString = "hours,";
+        var hourString = " hours,";
         var minuteString = " minutes left";
 
         if (hoursRemaining == 1) {
-          hourString = "hour,";
+          hourString = " hour,";
         }
         if (minutesRemaining == 1) {
           minuteString = " minute left";
@@ -218,6 +238,7 @@ function init() {
   }
 function showInfo(data, tabletop) {
   // data[i].Last)
+  if (!oneRun) {
   console.log(data);
   if (username == undefined) {
     $('#releaseStatus').text("Set your username in settings to see Senior Release Status");
@@ -240,8 +261,37 @@ function showInfo(data, tabletop) {
     }
     console.log("isClear = " + isClear);
 
-    var status = isClear ? "Clear" : "Not clear <br> See <a href=\"https:\/\/docs.google.com/spreadsheets/d/1re8tmdTfL0bM2Sz5ZP-op6u61KzGKNuXynn1xdEItac/edit#gid=947522328\" target=\"_blank\">here</a> for details.";
+    var status = isClear ? "Clear" : "Not clear, click arrow to see details";
+    var details;
+    var reasons = "";
+    if (!isClear) {
+      $("#arrowDrop").css({"visibility": "visible", "display": "inline"});
+      details = data[indexOfLast].Reason;
+      var listOfDetails = details.split("%");
+      for (var i = 0; i < listOfDetails.length; i++) {
+        if (listOfDetails[i] == "") {
+          listOfDetails[i] = "<br>";
+        }
+        if (listOfDetails[i].indexOf("Paquette") != -1) {
+          listOfDetails[i] = "Paquette";
+        }
+        reasons += listOfDetails[i];
+      }
+      console.log(reasons);
+      }
+    }
+    $('#releaseStatus').html(firstName + "'s Status:<br>" + status);
+    $('#releaseDetails').html('<span style="font-style: oblique;">Details:</span>' + reasons);
 
-    $('#releaseStatus').html(firstName + "'s <br> Release Status: <br>" + status);
+    var lines = (reasons.match(new RegExp("<br>", "g")) || []).length;
+    var lineHeight = $("#releaseDetails").css("line-height");
+    var detailsHeight = $("#releaseDetails").outerHeight(true);
+    var setter = 95/(lines + 1) + "px";
+    $('#releaseDetails').css({"line-height": setter + "px", "font-size": setter / 2 + "px"});
+    console.log("Reasons: " + reasons);
+    console.log("Line Height: " + lineHeight);
+    console.log("Lines: " + lines);
+    console.log("Height: " + detailsHeight);
   }
+  oneRun = true;
 }

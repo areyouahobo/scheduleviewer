@@ -30,18 +30,17 @@
     width: 75px;
     margin-left: -37.5px;
   }
-  #optionsLink:focus {outline:0;}
+  #optionsLink:focus, #arrowDrop:focus  {outline:0;}
 
   #selectedSchedule {
-    /*position: relative;*/
     font-size: 9pt;
     position: absolute;
     bottom: 50px;
     text-align: center;
     left: 50%;
-    right: 25%;
-    width: 65px;
-    margin-left: -32.5px;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%)
+
   }
 
   #minutesLeft {
@@ -58,14 +57,50 @@
 
   #releaseStatus {
     line-height: 125%;
+    position: absolute;
     display: block;
+    text-align: center;
+    width: 80%;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
   }
 
   .spacer {
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
   }
 
+  #arrowDrop {
+    display: none;
+    visibility: hidden;
+    position: absolute;
+    font-weight: 1000;
+    color: white;
+    background-color: black;
+    border: 0;
+    width: 30px;
+    font-size: 10px;
+    bottom: 70px;
+    text-align: center;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+    vertical-align: middle;
+  }
+
+  #releaseDetails {
+    visibility: hidden;
+    display: none;
+    position: absolute;
+    display: block;
+    text-align: center;
+    height: 95px;
+    width: 80%;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+  }
 
 
   </style>
@@ -78,6 +113,7 @@
   <script type="text/javascript" src="content.js"></script>
 </head>
 <body>
+
   <div id="titleSection">
     <div id="schedHeader"></div>
   </div>
@@ -87,6 +123,8 @@
 <div id="nextClass"></div>
 <div class="spacer"></div>
 <div id="releaseStatus"></div>
+<div id="releaseDetails"></div>
+<button id="arrowDrop">></button>
 
 
 <button type="button" class="btn btn-primary" id="optionsLink" style="margin-bottom: 10px;">Settings</button>
