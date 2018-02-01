@@ -1,6 +1,6 @@
 var manifestData = chrome.runtime.getManifest();
 $("#versionDisplay").text("Version " + manifestData.version);
-chrome.storage.sync.get(['scheduleToLoad', 'selectedTheme', 'backgroundColor', 'headerColor', 'textColor', 'buttonColor', 'buttonTextColor', 'username'], function(data) {
+chrome.storage.local.get(['scheduleToLoad', 'selectedTheme', 'backgroundColor', 'headerColor', 'textColor', 'buttonColor', 'buttonTextColor', 'username'], function(data) {
     selectedSchedule = data.scheduleToLoad;
     selectedTheme = data.selectedTheme;
     backgroundColor = data.backgroundColor;
@@ -89,9 +89,6 @@ function save_options() {
       }, 3000);
     });
 
-
-// $("#selectedSchedule").text(savedSched());
-// console.log(chrome.storage.sync.get(scheduleToLoad, function() {}));
 }
 document.getElementById('save').addEventListener('click',
     save_options);

@@ -1,134 +1,263 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
-  <style>
-  html, body {
-    height: 320px;
-    text-align: center;
-    font-family: 'Open Sans', sans-serif;
-  }
-  #titleSection {
-    background-color: black;
-    width: 150px;
-    font-size: 15pt;
-  }
-  #schedHeader {
-    color: white;
-  }
-  #currentClass {
-    display: block;
-    font-size: 12pt;
-    font-weight: 500;
-    line-height: 200%;
-  }
-  #optionsLink {
-    position: absolute;
-    bottom: 0;
-    text-align: center;
-    right: 25%
-    left: 50%;
-    width: 75px;
-    margin-left: -37.5px;
-  }
-  #optionsLink:focus, #arrowDrop:focus  {outline:0;}
 
-  #selectedSchedule {
-    font-size: 9pt;
-    position: absolute;
-    bottom: 50px;
-    text-align: center;
-    left: 50%;
-    -webkit-transform: translateX(-50%);
-    transform: translateX(-50%)
+	<style>
+	 html, body {
+	   height: 350px;
+	   width: 200px;
+	}
 
-  }
+	#content {
+	   height: 350px;
+	   text-align: center;
+	   font-family: 'Open Sans', sans-serif;
+	   position: absolute;
+	   right: 0;
+	}
 
-  #minutesLeft {
-    display: block;
-    line-height: 200%;
-  }
+	.titleSection {
+	   background-color: black;
+	   width: 175px;
+	   font-size: 15pt;
+	   color: white;
+	   text-align: center;
+	}
 
-  #timeRange {
-    display: block;
-    font-size: 9pt;
-    line-height: 200%;
-    font-style: oblique;
-  }
+	#todoHeader {
+	   position: absolute;
+	   display: none;
+	   visibility: hidden;
+	   right: 175px;
+	   border-right: 1px white solid;
+	}
 
-  #releaseStatus {
-    line-height: 125%;
-    position: absolute;
-    display: block;
-    text-align: center;
-    width: 80%;
-    left: 50%;
-    -webkit-transform: translateX(-50%);
-    transform: translateX(-50%);
-  }
+	#currentClass {
+	   display: block;
+	   font-size: 12pt;
+	   font-weight: 500;
+	   line-height: 200%;
+	}
 
-  .spacer {
-    margin-top: 5px;
-    margin-bottom: 5px;
-  }
+	#optionsLink {
+	   position: absolute;
+	   bottom: 0;
+	   text-align: center;
+	   right: 25%;
+	   left: 50%;
+	   width: 75px;
+	   margin-left: -37.5px;
+	}
 
-  #arrowDrop {
-    display: none;
-    visibility: hidden;
-    position: absolute;
-    font-weight: 1000;
-    color: white;
-    background-color: black;
-    border: 0;
-    width: 30px;
-    font-size: 10px;
-    bottom: 70px;
-    text-align: center;
-    left: 50%;
-    -webkit-transform: translateX(-50%);
-    transform: translateX(-50%);
-    vertical-align: middle;
-  }
+	#optionsLink:focus, #arrowDrop:focus, #todo:focus, #todo-add:focus, #todo-clear:focus {
+	   outline: 0;
+	}
 
-  #releaseDetails {
-    visibility: hidden;
-    display: none;
-    position: absolute;
-    display: block;
-    text-align: center;
-    width: 80%;
-    left: 50%;
-    -webkit-transform: translateX(-50%);
-    transform: translateX(-50%);
-  }
+	#selectedSchedule {
+	   font-size: 9pt;
+	   position: absolute;
+	   bottom: 50px;
+	   text-align: center;
+	   left: 50%;
+	   -webkit-transform: translateX(-50%);
+	   transform: translateX(-50%)
+	}
 
+	#minutesLeft {
+	   display: block;
+	   line-height: 200%;
+	}
 
-  </style>
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-  <script type="text/javascript" src='tabletop.js'></script>
-  <script type="text/javascript" src="jquery-3.2.1.min.js"></script>
-  <script type="text/javascript" src="moment.js"></script>
-  <script type="text/javascript" src="variables.js"></script>
-  <script type="text/javascript" src="content.js"></script>
+	#timeRange {
+	   display: block;
+	   font-size: 9pt;
+	   line-height: 200%;
+	   font-style: oblique;
+	}
+
+	#releaseStatus {
+	   line-height: 125%;
+	   position: absolute;
+	   display: block;
+	   text-align: center;
+	   width: 80%;
+	   left: 50%;
+	   -webkit-transform: translateX(-50%);
+	   transform: translateX(-50%);
+	}
+
+	.spacer {
+	   margin-top: 5px;
+	   margin-bottom: 5px;
+	}
+
+	#arrowDrop {
+	   display: none;
+	   visibility: hidden;
+	   position: absolute;
+	   font-weight: 1000;
+	   color: white;
+	   background-color: black;
+	   border: 0;
+	   width: 30px;
+	   font-size: 10px;
+	   bottom: 100px;
+	   text-align: center;
+	   left: 50%;
+	   -webkit-transform: translateX(-50%);
+	   transform: translateX(-50%);
+	   vertical-align: middle;
+	}
+
+	#releaseDetails {
+	   visibility: hidden;
+	   display: none;
+	   position: absolute;
+	   display: block;
+	   text-align: center;
+	   width: 80%;
+	   left: 50%;
+	   -webkit-transform: translateX(-50%);
+	   transform: translateX(-50%);
+	}
+
+	#todo {
+	   height: 100%;
+	   width: 25px;
+	   position: absolute;
+	   left: 0;
+	   background-color: white;
+	   color: black;
+	   border: 1px solid black;
+	   border-top: 0px;
+	   border-bottom: 0px;
+	   border-left: 0px;
+	}
+
+	#todo-text {
+	   font-family: 'Open Sans', sans-serif;
+	   width: 80px;
+	   -webkit-transform: rotate(270deg) translateY(-31px);
+	}
+
+	.todos {
+	   font-family: 'Open Sans', sans-serif;
+	   position: absolute;
+	   left: 40px;
+	   visibility: hidden;
+	   display: none;
+	}
+
+	#todo-list {
+	   max-height: 245px;
+	   max-width: 150px;
+	 width: 150px;
+	   overflow-y: scroll;
+	 overflow-x: visible;
+	   word-wrap: break-word;
+	   line-height: 125%;
+	   top: 30px;
+	}
+
+	#todo-add {
+	   position: absolute;
+	   width: 150px;
+	   bottom: 10px;
+	}
+
+	#todo-clear {
+	 position: absolute;
+	 left: 60px;
+	 width: 110px;
+	 bottom: 40px;
+	 height: 20px;
+	 padding: 0;
+	 margin: 0;
+	 font-size: 8pt;
+	}
+
+	ul {
+	   list-style-type: none;
+	   padding: 0px;
+	   margin: 0px;
+	}
+
+	ul li {
+	   cursor: pointer;
+	   box-sizing: border-box;
+	}
+
+	ul li:hover {
+	   background-color: #ddd;
+	   transition: .2s;
+	}
+
+	ul li.checked {
+	   text-decoration: line-through;
+	}
+
+	::-webkit-scrollbar {
+	   display: none;
+	}
+
+	.close {
+	 position: absolute;
+	 right: 0px;
+	 color: red;
+	}
+
+	#divider {
+	   position: absolute;
+	   width: 1px;
+	   height: 100%;
+	   right: 175px;
+	   border: 0px;
+	   background-color: black;
+	}
+	</style>
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+	<script src='tabletop.js' type="text/javascript">
+	</script>
+	<script src="jquery-3.2.1.min.js" type="text/javascript">
+	</script>
+	<script src="moment.js" type="text/javascript">
+	</script>
+	<script src="variables.js" type="text/javascript">
+	</script>
+	<script src="content.js" type="text/javascript">
+	</script>
+	<title></title>
 </head>
 <body>
-
-  <div id="titleSection">
-    <div id="schedHeader"></div>
-  </div>
-<div id="currentClass"></div>
-<div id="minutesLeft"></div>
-<div id="timeRange"></div>
-<div id="nextClass"></div>
-<div class="spacer"></div>
-<div id="releaseStatus"></div>
-<div id="releaseDetails"></div>
-<button id="arrowDrop">></button>
-
-
-<button type="button" class="btn btn-primary" id="optionsLink" style="margin-bottom: 10px;">Settings</button>
-<em><div id="selectedSchedule"></div></em>
-
-
+	<button id="todo">
+	<div id="todo-text">
+		<em>To Do List</em>
+	</div></button>
+	<div class="todos" id="todo-list">
+		<ul id="list"></ul>
+	</div>
+	<form>
+		<input class="todos" id="todo-add" placeholder="Add an item..." type="text"> <button class="todos btn btn-secondary" id="todo-clear">Clear Checked Items</button>
+	</form>
+	<div class="titleSection" id="todoHeader">
+		To Do
+	</div>
+	<div id="divider"></div>
+	<div id="content">
+		<div class="titleSection">
+			<div id="schedHeader"></div>
+		</div>
+		<div id="currentClass"></div>
+		<div id="minutesLeft"></div>
+		<div id="timeRange"></div>
+		<div id="nextClass"></div>
+		<div class="spacer"></div>
+		<div id="releaseStatus"></div>
+		<div id="releaseDetails"></div><button id="arrowDrop">&gt;</button> <button class="btn btn-primary" id="optionsLink" style="margin-bottom: 10px;" type="button">Settings</button> <em></em>
+		<div id="selectedSchedule">
+			<em></em>
+		</div>
+	</div>
 </body>
 </html>
