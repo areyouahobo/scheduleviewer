@@ -77,6 +77,7 @@ fridaySchedule = [
 ];
 
 var names = [
+"Paige Adams",
 "Evan	Allen",
 "Hunter	Avila",
 "Syed Baber",

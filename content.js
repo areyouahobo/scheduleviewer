@@ -217,6 +217,14 @@ function runMe() {
 			"background-color": backgroundColor,
 			"color": textColor
 		});
+		$("#todo").css({
+			"background-color": backgroundColor,
+			"color": textColor
+		});
+		$("#divider").css({
+			"background-color": headerColor,
+			"color": headerTextColor
+		});
 		$("#optionsLink").css({
 			"background-color": buttonColor,
 			"color": buttonTextColor,
