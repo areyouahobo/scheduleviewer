@@ -221,6 +221,19 @@ function runMe() {
 			"background-color": backgroundColor,
 			"color": textColor
 		});
+		$("#todo-add").css({
+			"background-color": backgroundColor,
+			"color": textColor,
+			"border": "0"
+		});
+		$("#schedHeader").css({
+			"background-color": headerColor,
+			"color": headerTextColor
+		});
+		$("#todoHeader").css({
+			"background-color": headerColor,
+			"color": headerTextColor
+		});
 		$("#divider").css({
 			"background-color": headerColor,
 			"color": headerTextColor
@@ -237,12 +250,8 @@ function runMe() {
 		});
 		$("#titleSection").css({
 			"background-color": headerColor,
-			"color": headerTextColor
-		});
-		$("#todo").css({
-			"background-color": "#F9F9F9",
-			"color": "black",
-			"border": "0"
+			"color": headerTextColor,
+			"border-color": headerColor
 		});
 	}
 	var date = new Date();
