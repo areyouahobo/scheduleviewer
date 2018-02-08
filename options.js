@@ -1,6 +1,6 @@
 var manifestData = chrome.runtime.getManifest();
 $("#versionDisplay").text("Version " + manifestData.version);
-chrome.storage.local.get(['scheduleToLoad', 'selectedTheme', 'backgroundColor', 'headerColor', 'textColor', 'buttonColor', 'buttonTextColor', 'username'], function(data) {
+chrome.storage.sync.get(['scheduleToLoad', 'selectedTheme', 'backgroundColor', 'headerColor', 'textColor', 'buttonColor', 'buttonTextColor', 'username'], function(data) {
     selectedSchedule = data.scheduleToLoad;
     selectedTheme = data.selectedTheme;
     backgroundColor = data.backgroundColor;
@@ -28,8 +28,6 @@ $('#nameSelect').append(namesToAdd);
   if (selectedTheme == undefined) {
     selectedTheme = "Classic";
   }
-  $("#scheduleToLoad").val(selectedSchedule);
-  $("#theme").val(selectedTheme);
   if (headerColor != undefined) {
     $("#backgroundPick").val(backgroundColor);
     $("#headerPick").val(headerColor);
@@ -52,6 +50,10 @@ $('#nameSelect').append(namesToAdd);
       $("#colorSelection").css({"visibility":"hidden", "display":"none"});
     }
     });
+    console.log(selectedSchedule);
+    console.log(selectedTheme);
+    $("#scheduleToLoad").val(selectedSchedule);
+    $("#theme").val(selectedTheme);
 });
 function save_options() {
 
