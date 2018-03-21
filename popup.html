@@ -5,7 +5,7 @@
 	<style>
 	 html, body {
 	   height: 350px;
-	   width: 200px;
+	   width: 175px;
 	}
 
 	#content {
@@ -22,14 +22,6 @@
 	   font-size: 15pt;
 	   color: white;
 	   text-align: center;
-	}
-
-	#todoHeader {
-	   position: absolute;
-	   display: none;
-	   visibility: hidden;
-	   right: 175px;
-	   border-right: 1px white solid;
 	}
 
 	#currentClass {
@@ -49,7 +41,7 @@
 	   margin-left: -37.5px;
 	}
 
-	#optionsLink:focus, #arrowDrop:focus, #todo:focus, #todo-add:focus, #todo-clear:focus {
+	#optionsLink:focus, #arrowDrop:focus{
 	   outline: 0;
 	}
 
@@ -121,99 +113,7 @@
 	   transform: translateX(-50%);
 	}
 
-	#todo {
-	   height: 100%;
-	   width: 25px;
-	   position: absolute;
-	   left: 0;
-	   background-color: white;
-	   color: black;
-	   border: 1px solid black;
-	   border-top: 0px;
-	   border-bottom: 0px;
-	   border-left: 0px;
-	}
 
-	#todo-text {
-	   font-family: 'Open Sans', sans-serif;
-	   width: 80px;
-	   -webkit-transform: rotate(270deg) translateY(-31px);
-	}
-
-	.todos {
-	   font-family: 'Open Sans', sans-serif;
-	   position: absolute;
-	   left: 40px;
-	   visibility: hidden;
-	   display: none;
-	}
-
-	#todo-list {
-	   max-height: 245px;
-	   max-width: 150px;
-	 width: 150px;
-	   overflow-y: scroll;
-	 overflow-x: visible;
-	   word-wrap: break-word;
-	   line-height: 125%;
-	   top: 30px;
-	}
-
-	#todo-add {
-	   position: absolute;
-	   width: 150px;
-	   bottom: 10px;
-	}
-
-	#todo-clear {
-	 position: absolute;
-	 left: 60px;
-	 width: 110px;
-	 bottom: 40px;
-	 height: 20px;
-	 padding: 0;
-	 margin: 0;
-	 font-size: 8pt;
-	}
-
-	ul {
-	   list-style-type: none;
-	   padding: 0px;
-	   margin: 0px;
-	}
-
-	ul li {
-	   cursor: pointer;
-	   box-sizing: border-box;
-	}
-
-	ul li:hover {
-	   background-color: #ddd;
-	   transition: .2s;
-	}
-
-	ul li.checked {
-	   text-decoration: line-through;
-	}
-
-	::-webkit-scrollbar {
-	   display: none;
-	}
-
-	.close {
-	 position: absolute;
-	 right: 0px;
-	 color: red;
-	}
-
-	#divider {
-	   position: absolute;
-	   width: 1px;
-	   height: 100%;
-	   right: 175px;
-	   border: 0px;
-	   background-color: black;
-	}
 	</style>
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
 	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
@@ -224,20 +124,6 @@
 	<script src="content.js" type="text/javascript"></script>
 </head>
 <body>
-	<button id="todo">
-	<div id="todo-text">
-		<em>To Do List</em>
-	</div></button>
-	<div class="todos" id="todo-list">
-		<ul id="list"></ul>
-	</div>
-	<form>
-		<input class="todos" id="todo-add" placeholder="Add an item..." type="text"> <button class="todos btn btn-secondary" id="todo-clear">Clear Checked Items</button>
-	</form>
-	<div class="titleSection" id="todoHeader">
-		To Do
-	</div>
-	<div id="divider"></div>
 	<div id="content">
 		<div class="titleSection">
 			<div id="schedHeader"></div>

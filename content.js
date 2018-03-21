@@ -1,6 +1,6 @@
 var selectedSchedule = "A";
 var selectedTheme = "Classic";
-var backgroundColor, headerColor, headerTextColor, textColor, buttonColor, buttonTextColor, nameList, username, accessedToDo;
+var backgroundColor, headerColor, headerTextColor, textColor, buttonColor, buttonTextColor, nameList, username;
 var oneRun = false;
 var fullMoment = moment();
 var now = moment({
@@ -8,36 +8,7 @@ var now = moment({
 	minute: fullMoment.get('minutes')
 });
 var dayName = fullMoment.format("dddd");
-var local = (function() {
-	var setData = function(key, obj) {
-		var values = JSON.stringify(obj);
-		localStorage.setItem(key, values);
-	}
-	var getData = function(key) {
-		if (localStorage.getItem(key) != null) {
-			return JSON.parse(localStorage.getItem(key));
-		} else {
-			return false;
-		}
-	}
-	var updateDate = function(key, newData) {
-		if (localStorage.getItem(key) != null) {
-			var oldData = JSON.parse(localStorage.getItem(key));
-			for (keyObj in newData) {
-				oldData[keyObj] = newData[keyObj];
-			}
-			var values = JSON.stringify(oldData);
-			localStorage.setItem(key, values);
-		} else {
-			return false;
-		}
-	}
-	return {
-		set: setData,
-		get: getData,
-		update: updateDate
-	}
-})();
+
 chrome.runtime.onUpdateAvailable.addListener(function(details) {
 	chrome.runtime.reload();
 });
@@ -86,94 +57,19 @@ $(function() {
 			});
 		}
 	});
-	// HOW TO SAVE AND GE`T
-	// var a = {'test':123};
-	// local.set('valueA', a);
-	// localStorage.removeItem(key);
-	console.log(local.get('listOfToDos'));
-	$.each(local.get('listOfToDos'), function(key, value) {
-		if (value.indexOf("^") != -1) {
-			value = value.substring(0, value.length - 1);
-			$("ul#list").append('<li class="checked">' + value + "</li>");
-		} else {
-			$("ul#list").append('<li id="new">' + value + "</li>");
-			$("#new").removeClass("checked");
-			$("#new").removeAttr("new");
-		}
-	});
-	$("#list li").click(function() {
-		$(this).toggleClass("checked");
-		saveToDo();
-	});
-});
 
-function saveToDo() {
-	var saveToDo = {};
-	var listElements = $("#list li").length;
-	$.each($("ul#list li"), function(index) {
-		var entry = $("ul#list li").eq(index).text();
-		saveToDo[index] = entry;
-		if ($(this).hasClass('checked')) {
-			saveToDo[index] += "^";
-			console.log($(this).text() + " has class");
-		}
-	});
-	local.set('listOfToDos', saveToDo, "cool");
-	console.log(local.get('listOfToDos'));
-}
+
+});
 
 function runMe() {
 	if (!oneRun) {
 		init();
 	}
+
 	$("#optionsLink").click(function() {
 		chrome.runtime.openOptionsPage();
 	});
-	$("#todo-clear").click(function() {
-		$.each($("ul#list li"), function(index) {
-			if ($(this).hasClass('checked')) {
-				$(this).remove();
-			}
-		});
-		saveToDo();
-	});
-	$("#todo").click(function() {
-		if ($("body").width() == "200") {
-			$("html, body").width("375px");
-			$(".todos").css({
-				"visibility": "visible",
-				"display": "inline-block"
-			});
-			$("#todoHeader").css({
-				"visibility": "visible",
-				"display": "inline-block"
-			});
-		} else if ($("body").width() == "375") {
-			$("html, body").width("200px");
-			$(".todos").css({
-				"visibility": "hidden",
-				"display": "none"
-			});
-			$("#todoHeader").css({
-				"visibility": "hidden",
-				"display": "none"
-			});
-		}
-	});
-	$("#todo-add").keypress(function(event) {
-		var pressed = event.which;
-		if (pressed == 13) {
-			$("#list").append('<li>' + $("#todo-add").val() + "</li>");
-			$("#todo-add").val("");
-			$("ul#list li").click(function() {
-				$(this).toggleClass("checked");
-			});
-			saveToDo();
-		}
-	});
-	$("ul li").click(function() {
-		$(this).toggleClass("checked");
-	});
+
 	if (selectedTheme == "Midnight") {
 		$("body").css({
 			"background-color": "black",
@@ -189,52 +85,17 @@ function runMe() {
 			"color": "white",
 			"border-color": "gray"
 		});
-		$("#todo").css({
-			"background-color": "#000",
-			"color": "white",
-			"border-color": "white"
-		});
-		$("#todo-add").css({
-			"background-color": "#000",
-			"color": "white",
-			"border": "0px"
-		});
 		$("#divider").css({
 			"background-color": "#FFF"
 		});
-		$("ul li").hover(function() {
-			$(this).css({
-				"background-color": "gray"
-			});
-		}, function() {
-			$(this).css({
-				"background-color": "black"
-			});
-		});
+
 	}
 	if (selectedTheme == "Custom") {
 		$("body").css({
 			"background-color": backgroundColor,
 			"color": textColor
 		});
-		$("#todo").css({
-			"background-color": backgroundColor,
-			"color": textColor
-		});
-		$("#todo-add").css({
-			"background-color": backgroundColor,
-			"color": textColor,
-			"border": "0"
-		});
 		$("#schedHeader").css({
-			"background-color": headerColor,
-			"color": headerTextColor
-		});
-		$("#todoHeader").css({
-			"background-color": headerColor,
-			"color": headerTextColor
-		});
-		$("#divider").css({
 			"background-color": headerColor,
 			"color": headerTextColor
 		});
@@ -243,11 +104,7 @@ function runMe() {
 			"color": buttonTextColor,
 			"border-color": buttonColor
 		});
-		$("#todo-clear").css({
-			"background-color": buttonColor,
-			"color": buttonTextColor,
-			"border-color": buttonColor
-		});
+
 		$("#titleSection").css({
 			"background-color": headerColor,
 			"color": headerTextColor,
@@ -391,28 +248,34 @@ function minutesDisplay(minutesRemaining) {
 
 function init() {
 	Tabletop.init({
-		key: "https://docs.google.com/spreadsheets/d/1YTNGp8Kb9Ey2Jwkvqp09rPi-9lBWwjWtlwWHMvG9zpw/edit?usp=sharing",
-		callback: showInfo,
-		simpleSheet: true
+		key: "https://docs.google.com/spreadsheets/d/1EOXZnbuVfVCpPNYb7WSOHu0L7fZiq-OM6QsMfxT5jyI/edit?usp=sharing",
+		callback: showInfo
 	})
 }
 
 function showInfo(data, tabletop) {
 	// data[i].Last)
+	var list = tabletop.sheets("Non-release List").all();
+	var monday = tabletop.sheets("Monday").all();
+	console.log(monday);
+
 	if (!oneRun) {
-		console.log(data);
+		console.log(list);
+		console.log(username);
 		if (username == undefined) {
 			$('#releaseStatus').text("Set your username in settings to see Senior Release Status");
 		} else {
 			var isClear = true;
 			var firstName = username.substring(0, username.indexOf(" "));
 			var lastName = username.substring(username.indexOf(" ") + 1);
+			console.log(firstName);
+			console.log(lastName);
 			var indexOfFirst, indexOfLast;
-			for (var i = 0; i < data.length; i++) {
-				if (data[i].First.indexOf(firstName) != -1) {
+			for (var i = 0; i < list.length; i++) {
+				if (list[i].First.indexOf(firstName) != -1) {
 					indexOfFirst = i;
 				}
-				if (data[i].Last.indexOf(lastName) != -1) {
+				if (list[i].Last.indexOf(lastName) != -1) {
 					indexOfLast = i;
 				}
 			}
@@ -427,7 +290,7 @@ function showInfo(data, tabletop) {
 					"visibility": "visible",
 					"display": "inline"
 				});
-				details = data[indexOfLast].Reason;
+				details = list[indexOfLast].Reason;
 				var listOfDetails = details.split("%");
 				for (var i = 0; i < listOfDetails.length; i++) {
 					if (listOfDetails[i] == "") {
