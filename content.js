@@ -32,10 +32,10 @@ chrome.runtime.onInstalled.addListener(function(details) {
 	}
 });
 $(function() {
-	$("#releaseStatus").text("Loading...");
+	$("#releaseStatus").text("Checking for updates...");
 	setTimeout(function() {
 		if ($("#releaseStatus").text() == "Loading...") {
-			$("#releaseStatus").text("Loading... (still)");
+			$("#releaseStatus").text("Checking for update (this is taking a bit)...");
 		}
 	}, 5000);
 	$("#arrowDrop").click(function() {
@@ -63,6 +63,21 @@ $(function() {
 
 function runMe() {
 	if (!oneRun) {
+		if (local.get('mondaySchedule') != undefined) {
+			mondaySchedule = local.get('mondaySchedule');
+		}
+		if (local.get('tuesdaySchedule') != undefined) {
+			tuesdaySchedule = local.get('tuesdaySchedule');
+		}
+		if (local.get('wednesdaySchedule') != undefined) {
+			wednesdaySchedule = local.get('wednesdaySchedule');
+		}
+		if (local.get('thursdaySchedule') != undefined) {
+			thursdaySchedule = local.get('thursdaySchedule');
+		}
+		if (local.get('fridaySchedule') != undefined) {
+			fridaySchedule = local.get('fridaySchedule');
+		}
 		init();
 	}
 
@@ -111,8 +126,7 @@ function runMe() {
 			"border-color": headerColor
 		});
 	}
-	var date = new Date();
-	var today = date.getDay();
+
 	switch (today) {
 		case 0:
 			$("#schedHeader").text("Sunday");
@@ -151,6 +165,7 @@ function createView(sched) {
 	$("#schedHeader").text(dayName);
 	try {
 		$("#currentClass").text(scheduleCalc(sched)[0]);
+		console.log(scheduleCalc(sched)[0]);
 	} catch (TypeError) {
 		$("#currentClass").text("Nothing right now");
 	}
@@ -256,20 +271,125 @@ function init() {
 function showInfo(data, tabletop) {
 	// data[i].Last)
 	var list = tabletop.sheets("Non-release List").all();
-	var monday = tabletop.sheets("Monday").all();
-	console.log(monday);
+	var currentSched;
+	switch (today) {
+		case 0:
+						currentSched = tabletop.sheets("Sunday").all();
+						break;
+		case 1:
+						currentSched = tabletop.sheets("Monday").all();
+						var output = currentSched.map(function(obj) {
+						return Object.keys(obj).sort().map(function(key) {
+						return obj[key];
+							});
+						});
+						var blank = [[],[]];
+						for (var i = 0; i < output.length; i++) {
+							for (var j = 0; j < 6; j++) {
+								if (blank[i] == undefined) {
+									blank[i] = [];
+								}
+								blank[i].push(output[i][5], output[i][4], output[i][0], output[i][1], output[i][2], output[i][3]);
+							}
+						}
+						mondaySchedule = blank;
+						local.set('mondaySchedule', mondaySchedule);
+						runMe();
+						break;
+		case 2:
+						currentSched = tabletop.sheets("Tuesday").all();
+						var output = currentSched.map(function(obj) {
+						return Object.keys(obj).sort().map(function(key) {
+						return obj[key];
+							});
+						});
+						var blank = [[],[]];
+						for (var i = 0; i < output.length; i++) {
+							for (var j = 0; j < 6; j++) {
+								if (blank[i] == undefined) {
+									blank[i] = [];
+								}
+								blank[i].push(output[i][5], output[i][4], output[i][0], output[i][1], output[i][2], output[i][3]);
+							}
+						}
+						tuesdaySchedule = blank;
+						local.set('tuesdaySchedule',tuesdaySchedule);
+						runMe();
+						break;
+		case 3:
+						currentSched = tabletop.sheets("Wednesday").all();
+						var output = currentSched.map(function(obj) {
+						return Object.keys(obj).sort().map(function(key) {
+						return obj[key];
+							});
+						});
+						var blank = [[],[]];
+						for (var i = 0; i < output.length; i++) {
+							for (var j = 0; j < 6; j++) {
+								if (blank[i] == undefined) {
+									blank[i] = [];
+								}
+								blank[i].push(output[i][5], output[i][4], output[i][0], output[i][1], output[i][2], output[i][3]);
+							}
+						}
+						wednesdaySchedule = blank;
+						local.set('wednesdaySchedule',wednesdaySchedule);
+						runMe();
+						break;
+		case 4:
+						currentSched = tabletop.sheets("Thursday").all();
+						var output = currentSched.map(function(obj) {
+						return Object.keys(obj).sort().map(function(key) {
+						return obj[key];
+							});
+						});
+						var blank = [[],[]];
+						for (var i = 0; i < output.length; i++) {
+							for (var j = 0; j < 6; j++) {
+								if (blank[i] == undefined) {
+									blank[i] = [];
+								}
+								blank[i].push(output[i][5], output[i][4], output[i][0], output[i][1], output[i][2], output[i][3]);
+							}
+						}
+						thursdaySchedule = blank;
+						local.set('thursdaySchedule',thursdaySchedule);
+						runMe();
+						break;
+		case 5:
+						currentSched = tabletop.sheets("Friday").all();
+						var output = currentSched.map(function(obj) {
+						return Object.keys(obj).sort().map(function(key) {
+						return obj[key];
+							});
+						});
+						var blank = [[],[]];
+						for (var i = 0; i < output.length; i++) {
+							for (var j = 0; j < 6; j++) {
+								if (blank[i] == undefined) {
+									blank[i] = [];
+								}
+								blank[i].push(output[i][5], output[i][4], output[i][0], output[i][1], output[i][2], output[i][3]);
+							}
+						}
+						fridaySchedule = blank;
+						local.set('fridaySchedule', fridaySchedule);
+						runMe();
+						break;
+		case 6:
+						currentSched = tabletop.sheets("Saturday").all();
+						break;
+	}
 
+	console.log(output);
 	if (!oneRun) {
 		console.log(list);
-		console.log(username);
 		if (username == undefined) {
 			$('#releaseStatus').text("Set your username in settings to see Senior Release Status");
 		} else {
 			var isClear = true;
 			var firstName = username.substring(0, username.indexOf(" "));
 			var lastName = username.substring(username.indexOf(" ") + 1);
-			console.log(firstName);
-			console.log(lastName);
 			var indexOfFirst, indexOfLast;
 			for (var i = 0; i < list.length; i++) {
 				if (list[i].First.indexOf(firstName) != -1) {
